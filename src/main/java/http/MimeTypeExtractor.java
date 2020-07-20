@@ -1,10 +1,12 @@
+package http;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-class MimeTypeExtractor {
+public class MimeTypeExtractor {
     private static final Map<String, String> conversionMap =
             Collections.unmodifiableMap(new HashMap<String, String>() {
                 {

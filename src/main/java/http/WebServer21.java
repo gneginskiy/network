@@ -1,3 +1,5 @@
+package http;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -8,32 +10,35 @@ import java.util.StringTokenizer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class WebServer {
-    public static final String RELATIVE_PATH = "/Users/grigory_neginsky/";
+public class WebServer21 {
+    private static final String RELATIVE_PATH = "/Users/grigory_neginsky/";
 
     public static void main(String[] args) throws IOException {
         ServerSocket serverConnect = new ServerSocket(8080);
-        ExecutorService executorService = Executors.newFixedThreadPool(16);
         while (true) {
-            executorService.submit(()->{
+            Socket clientConnection = serverConnect.accept();
+            ExecutorService executorService = Executors.newFixedThreadPool(4);
+            //todo autoclosable, refactor(generic server + handlers), load testing, etc
+            //todo: sync multithreaded vs async
+            //todo: http client
+            executorService.submit(() -> {
                 try {
-                    Socket clientConnection = serverConnect.accept();
                     InputStream inputStream = clientConnection.getInputStream();
                     BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
-                    String message = "";
                     String requestMessage = getRequestMessage(br);
-                    message += requestMessage;
-                    message += "<br>bird is a WORD<br>";
                     String fileName = getFileName(requestMessage);
-                    message = message + getFileContent(fileName);
-                    PrintWriter out = new PrintWriter(clientConnection.getOutputStream());
-                    String contentMimeType = "text/html";
+                    byte[] responseData = getFileContent(fileName);
+                    OutputStream outputStream = clientConnection.getOutputStream();
+                    PrintWriter out = new PrintWriter(outputStream);
+                    String contentMimeType = MimeTypeExtractor.getMimeType(fileName, requestMessage);
                     out.println("HTTP/1.1 200 privet");
                     out.println("Content-type: " + contentMimeType);
-                    out.println("Content-length: " + message.getBytes().length);
+                    out.println("Content-length: " + responseData.length);
                     out.println();
-                    out.print(message);
                     out.flush();
+                    outputStream.write(responseData);
+                    outputStream.flush();
+                    clientConnection.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -41,26 +46,29 @@ public class WebServer {
         }
     }
 
+
     private static String getFileName(String requestMessage) {
         StringTokenizer st = new StringTokenizer(requestMessage);
         st.nextToken();
-        return st.nextToken().replace("/", "");
+        return st.nextToken().substring(1);
     }
 
     private static String getRequestMessage(BufferedReader br) throws IOException {
         StringBuilder sb = new StringBuilder();
         String line;
-        while (StringUtils.isNotEmpty(line = br.readLine())) {
-            sb.append(line).append("<br>");
+        int lineNum = 0;
+        while (StringUtils.isNotEmpty(line = br.readLine()) && lineNum < 2) {
+            sb.append(line).append("\r\n");
+            lineNum++;
         }
         return sb.toString();
     }
 
-    private static String getFileContent(String fileName) throws IOException {
+    private static byte[] getFileContent(String fileName) {
         try {
-            return FileUtils.readFileToString(new File(RELATIVE_PATH + fileName), "UTF-8");
+            return FileUtils.readFileToByteArray(new File(RELATIVE_PATH + fileName));
         } catch (IOException e) {
-            return "404";
+            return "404".getBytes();
         }
     }
 }
