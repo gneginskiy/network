@@ -10,17 +10,18 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class WebClient {
+    //how is it better than this:
+    //for ((i=1;i<=20000;i++)); do   curl -s "http://localhost:8080/indeps.htm"; done
+    //???
+
     public static final String REQ = "GET /indeps.htm HTTP/1.1\nHost: localhost:8080\n\n";
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        for (int i = 200; i < 10000; i=(i*3)/2) {
-            testForNconnections(i);
-            Thread.sleep(10_000);
-        }
+            testForNconnections(20000);
     }
 
     private static void testForNconnections( int max) throws InterruptedException {
-        ExecutorService executor = Executors.newFixedThreadPool(20);
+        ExecutorService executor = Executors.newFixedThreadPool(4);
         AtomicInteger counter = new AtomicInteger();
         for (int j = 0; j < max; j++) {
             executor.submit(() -> {
@@ -46,6 +47,7 @@ public class WebClient {
             socket.close();
         } catch (IOException e) {
             e.printStackTrace();
+            System.exit(-1);
         }
     }
 }

@@ -10,18 +10,18 @@ import java.util.StringTokenizer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class WebServer21 {
+public class WebServer {
     private static final String RELATIVE_PATH = "/Users/grigory_neginsky/";
 
     public static void main(String[] args) throws IOException {
         ServerSocket serverConnect = new ServerSocket(8080);
+        ExecutorService executorService = Executors.newFixedThreadPool(4);
+
         while (true) {
             Socket clientConnection = serverConnect.accept();
-            ExecutorService executorService = Executors.newFixedThreadPool(4);
             //todo autoclosable, refactor(generic server + handlers), load testing, etc
             //todo: sync multithreaded vs async
-            //todo: http client
-            executorService.submit(() -> {
+            executorService.execute(() -> {
                 try {
                     InputStream inputStream = clientConnection.getInputStream();
                     BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
