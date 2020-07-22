@@ -17,7 +17,7 @@ public class WebClient {
     public static final String REQ = "GET /indeps.htm HTTP/1.1\nHost: localhost:8080\n\n";
 
     public static void main(String[] args) throws IOException, InterruptedException {
-            testForNconnections(20000);
+            testForNconnections(100);
     }
 
     private static void testForNconnections( int max) throws InterruptedException {
@@ -43,7 +43,7 @@ public class WebClient {
             OutputStream out = socket.getOutputStream();
             out.write(REQ.getBytes());
             byte[] bytes = in.readAllBytes();
-            //System.out.println(new String(bytes));
+            System.out.println(new String(bytes));
             socket.close();
         } catch (IOException e) {
             e.printStackTrace();
