@@ -14,7 +14,7 @@ import java.util.concurrent.Executors;
 public class TcpServer {
     private static final int DEFAULT_PORT = 8080;
     @Builder.Default private int port = DEFAULT_PORT;
-    @Builder.Default private int nThreads = ConcurrencyUtil.getCoresAmountFromOS();
+    @Builder.Default private int nThreads = ConcurrencyUtil.getNcores();
     private RequestHandler requestHandler;
 
     public void start() throws IOException {

@@ -11,7 +11,6 @@ public class WebServerApp {
     public static void main(String... args)  {
         TcpServer.builder()
                 .port(8080)
-//                .nThreads(4)
                 .requestHandler(new SimpleHttpRequestHandler(WWW_ROOT))
                 .build()
                 .start();
