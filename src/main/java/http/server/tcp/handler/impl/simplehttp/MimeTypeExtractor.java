@@ -1,4 +1,4 @@
-package http;
+package http.server.tcp.handler.impl.simplehttp;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -6,9 +6,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+//todo: refactor me -> properties,
 public class MimeTypeExtractor {
     private static final Map<String, String> conversionMap =
-            Collections.unmodifiableMap(new HashMap<String, String>() {
+            Collections.unmodifiableMap(new HashMap<>() {
                 {
                     put(".123", "application/vnd.lotus-1-2-3");
                     put(".3dml", "text/vnd.in3d.3dml");
@@ -838,6 +839,6 @@ public class MimeTypeExtractor {
     }
 
     private static String extractMimeFromRequest(String requestMessage) {
-        return null;
+        return null; //todo: mime from req / file content ?
     }
 }

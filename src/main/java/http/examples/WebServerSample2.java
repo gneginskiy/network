@@ -1,6 +1,6 @@
 package http.examples;
 
-import http.MimeTypeExtractor;
+import http.server.tcp.handler.impl.simplehttp.MimeTypeExtractor;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 

@@ -1,4 +1,4 @@
-package http;
+import lombok.SneakyThrows;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,18 +9,20 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class WebClient {
+public class WebServerAppClient {
     //how is it better than this:
     //for ((i=1;i<=20000;i++)); do   curl -s "http://localhost:8080/indeps.htm"; done
     //???
 
-    public static final String REQ = "GET /indeps.htm HTTP/1.1\nHost: localhost:8080\n\n";
+    private static final String REQ = "GET /indeps.htm HTTP/1.1\nHost: localhost:8080\n\n";
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+
+    public static void main(String... args)  {
             testForNconnections(100);
     }
 
-    private static void testForNconnections( int max) throws InterruptedException {
+    @SneakyThrows
+    public static void testForNconnections( int max)  {
         ExecutorService executor = Executors.newFixedThreadPool(4);
         AtomicInteger counter = new AtomicInteger();
         for (int j = 0; j < max; j++) {
@@ -43,7 +45,7 @@ public class WebClient {
             OutputStream out = socket.getOutputStream();
             out.write(REQ.getBytes());
             byte[] bytes = in.readAllBytes();
-            System.out.println(new String(bytes));
+          //  System.out.println(new String(bytes));
             socket.close();
         } catch (IOException e) {
             e.printStackTrace();

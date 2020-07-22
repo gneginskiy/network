@@ -1,6 +1,5 @@
-package http.server.tcp.handler.impl;
+package http.server.tcp.handler.impl.simplehttp;
 
-import http.MimeTypeExtractor;
 import http.server.tcp.handler.RequestHandler;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;
